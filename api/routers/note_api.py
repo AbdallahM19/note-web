@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Union, Optional, Annotated
-from fastapi import APIRouter, Path, Depends
+from fastapi import APIRouter, Path, Depends, HTTPException
 from pydantic import Field
 from api.app import note_model, user_model
 from api.models.notes import BaseNote, NoteDetails
@@ -41,24 +41,24 @@ async def get_notes_by_field(
                 notes_data = f"Invalid field: {field}. Must be 'title', 'content', 'list' or 'id'."
 
         if isinstance(notes_data, str):
-            return {"message": notes_data}
+            raise HTTPException(status_code=400, detail=notes_data)
 
         return notes_data
+    except HTTPException as http_ex:
+        raise http_ex
     except Exception as e:
-        raise ValueError(
-            f"Invalid field: {field}. Must be 'title', 'content', 'list' or 'id'."
-        ) from e
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/notes/create", response_model=NoteDetails)
 async def create_note(
-    item: BaseNote, session: SessionManager = Depends(get_session_manager)
+    note_data: BaseNote, session: SessionManager = Depends(get_session_manager)
 ) -> dict:
     """Create a new note."""
-    if item.user_id == 0 or not item.user_id:
-        item.user_id = session.user_id
+    if note_data.user_id == 0 or not note_data.user_id:
+        note_data.user_id = session.user_id
 
-    new_note = note_model.create_a_new_note(item)
+    new_note = note_model.create_a_new_note(note_data)
 
     return new_note
 
