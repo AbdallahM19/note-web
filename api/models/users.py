@@ -12,7 +12,6 @@ class BaseUser(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
     date_of_birth: Optional[str] = None
-    description: Optional[str] = None
 
 
 class UserIn(BaseUser):
@@ -209,5 +208,4 @@ class User():
             "time_created": user.time_created,
             "last_opened": user.last_opened,
             "date_of_birth": user.date_of_birth,
-            "description": user.description,
         }

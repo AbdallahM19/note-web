@@ -28,7 +28,6 @@ class UserDb(Base):
     time_created = Column(DateTime, default=datetime.now)
     last_opened = Column(DateTime, default=datetime.now)
     date_of_birth = Column(Text, default=None)
-    description = Column(String(500), default=None)
 
 
 class NoteDb(Base):

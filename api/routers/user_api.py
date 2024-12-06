@@ -108,7 +108,6 @@ async def register(
     email: str,
     password: str,
     date_of_birth: Optional[str] = None,
-    description: Annotated[Optional[str], Query(max_length=500)] = None,
 ) -> BaseUser:
     """Register a new user"""
     try:
@@ -127,7 +126,6 @@ async def register(
             email=email,
             hashed_password=password,
             date_of_birth=date_of_birth,
-            description=description,
             session_id=str(uuid4())
         )
 
@@ -169,28 +167,24 @@ async def update_user_data(
                     "email": "mohammed123@example.com",
                     "hashed_password": "mohammed@123",
                     "date_of_birth": "11-1-2002",
-                    "description": "my name is mohamed, i have big house in new york",
                 },
                 {
                     "username": "john",
                     "email": "johnJ2@example.com",
                     "hashed_password": "johnJ2@123",
                     "date_of_birth": "",
-                    "description": "",
                 },
                 {
                     "username": "alex",
                     "email": "alex123@example.com",
                     "hashed_password": "alexA",
                     "date_of_birth": "24-5-2002",
-                    "description": "",
                 },
                 {
                     "username": "alex",
                     "email": "alex123@example.com",
                     "hashed_password": "alexA",
                     "date_of_birth": "",
-                    "description": "alex john is my name",
                 }
             ]
         )
@@ -213,7 +207,6 @@ async def update_user_data(
                     username=user_dict["username"],
                     email=user_dict["email"],
                     date_of_birth=user_dict["date_of_birth"],
-                    description=user_dict["description"]
                 ),
                 "status": 200
             }
