@@ -53,7 +53,7 @@ async def get_user(
             return users_data
         return users_data
 
-    return {"message": users_data}
+    raise HTTPException(status_code=400, detail=users_data)
 
 
 @router.post("/users/login")
@@ -146,8 +146,8 @@ async def register(
 async def update_user_data(
     user_id: Annotated[
         Union[int, str], Path(
-            title= "Update user by id or 'me'",
-            description= "Update user data by id or 'me' to update current user data",
+            title="Update user by id or 'me'",
+            description="Update user data by id or 'me' to update current user data",
             examples=[
                 {
                     "user_id": 14
@@ -218,11 +218,10 @@ async def update_user_data(
                 ),
                 "status": 200
             }
-        return {
-            "error": "User data update failed",
-            "search": user_id,
-            "status": 400,
-        }
+        raise HTTPException(
+            status_code=400,
+            detail=f"Failed to update user account id={user_id}"
+        )
     except HTTPException as http_ex:
         raise http_ex
     except Exception as e:
@@ -253,10 +252,11 @@ async def delete_user_account_completely(
             "status": 200
         }
 
-    return {
-        "message": "User account could not be deleted",
-        "status": 500
-    }
+    raise HTTPException(
+        status_code=400,
+        detail=f"Failed to delete user account id={user_id}"
+    )
+
 
 @router.delete("/users/logout")
 async def logout_user(request: Request) -> dict:
