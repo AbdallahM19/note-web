@@ -30,6 +30,22 @@ async def home():
     return {"message": "Welcome in Home"}
 
 
+# @router.get("/register")
+# for get html register
+
+
+# @router.get("/login")
+# for get html login
+
+
+@router.put("/index")
+async def index(items: Test):
+    """index Page"""
+    print(
+        f"\n\nTitle: {items.title}\nSearch: {items.search}\n\n"
+    )
+
+
 # @router.get("/index")
 # async def index(
 #     id: Union[int, None]
@@ -42,18 +58,3 @@ async def home():
 # ):
 #     """index Page"""
 #     print()
-
-
-@router.put("/index")
-async def index(items: Test):
-    """index Page"""
-    print(
-        f"\n\nTitle: {items.title}\nSearch: {items.search}\n\n"
-    )
-
-# @router.get("/register")
-# for get html register
-
-
-# @router.get("/login")
-# for get html login
