@@ -193,12 +193,20 @@ async def update_user_data(
 ) -> dict:
     """Update user Account"""
     try:
-        user_dict = user_account.dict()
+        if isinstance(user_id, str) and user_id.isdigit():
+            user_id = int(user_id)
 
-        if isinstance(user_id, str) and user_id == 'me':
-            user_dict["session_id"] = session.session_id
-        elif isinstance(user_id, int) and user_id >= 1:
+        user_dict = user_account.model_dump()
+
+        if isinstance(user_id, int) and user_id >= 1:
             user_dict["id"] = user_id
+        elif isinstance(user_id, str) and user_id == 'me':
+            user_dict["session_id"] = session.session_id
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid user_id. It should be either 'me' or a positive integer."
+            )
 
         if user_model.update_user_account(user_dict):
             return {
@@ -215,11 +223,13 @@ async def update_user_data(
             "search": user_id,
             "status": 400,
         }
+    except HTTPException as http_ex:
+        raise http_ex
     except Exception as e:
         raise HTTPException(
             status_code=400,
             detail=f"An error occurred while updating the user: {str(e)}"
-        ) from e
+        )
 
 
 @router.delete("/users/{user_id}/delete")
