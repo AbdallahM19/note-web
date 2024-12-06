@@ -155,13 +155,13 @@ class User():
         try:
             user = None
 
-            if kwargs['session_id']:
+            if kwargs.get("session_id"):
                 user = self.sess.query(UserDb).filter(
-                    UserDb.session_id == kwargs['session_id']
+                    UserDb.session_id == kwargs["session_id"]
                 ).first()
-            elif kwargs['id']:
+            elif kwargs.get("id"):
                 user = self.sess.query(UserDb).filter(
-                    UserDb.id == kwargs['id']
+                    UserDb.id == kwargs["id"]
                 ).first()
 
             if user:
