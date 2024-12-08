@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Union, Optional, Annotated
-from fastapi import APIRouter, Path, Depends, HTTPException
+from fastapi import APIRouter, Path, Depends, HTTPException, status
 from pydantic import Field
 from api.app import note_model, user_model
 from api.models.notes import BaseNote, NoteDetails
@@ -50,7 +50,7 @@ async def get_notes_by_field(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/notes/create", response_model=NoteDetails)
+@router.post("/notes/create", response_model=NoteDetails, status_code=status.HTTP_201_CREATED)
 async def create_note(
     note_data: BaseNote, session: SessionManager = Depends(get_session_manager)
 ) -> dict:

@@ -2,7 +2,7 @@
 
 from typing import Union, Optional, Annotated  #, List
 from uuid import uuid4
-from fastapi import APIRouter, HTTPException, Query, Path, Depends, Body, Request
+from fastapi import APIRouter, HTTPException, Query, Path, Depends, Body, Request, status
 from api.app import user_model
 from api.database import UserDb
 from api.models.users import BaseUser, UserIn, UserDetails
@@ -101,7 +101,7 @@ async def login(
         )
 
 
-@router.post("/users/register")
+@router.post("/users/register", status_code=status.HTTP_201_CREATED)
 async def register(
     request: Request,
     username: Annotated[str, Query(min_length=3, max_length=50)],
