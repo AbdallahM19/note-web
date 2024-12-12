@@ -7,6 +7,21 @@ header {
   height: 10vh;
 }
 
+header #darkModeToggle {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header button img {
+  width: 24px;
+  height: 24px;
+}
+
 @media (max-width:778px) {
   header {
     width: 100vw;

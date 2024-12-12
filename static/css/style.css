@@ -117,6 +117,7 @@ form.signup-form{
 .social-media {
     display: flex;
     justify-content: center;
+    margin-bottom: 10px;
 }
 
 .social-icon {
