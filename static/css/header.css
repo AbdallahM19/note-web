@@ -1,0 +1,23 @@
+header {
+  display: flex;
+  font-family: sans-serif;
+  align-items: center;
+  justify-content: center;
+  width: 80vw;
+  height: 10vh;
+}
+
+@media (max-width:778px) {
+  header {
+    width: 100vw;
+		height: 8vh;
+  }
+}
+
+@media (max-width:638px) {
+
+}
+
+@media (max-width:320px) {
+
+}
