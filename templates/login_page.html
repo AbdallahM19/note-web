@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
   <title>Login Form</title>
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/all.css">
+  <link rel="stylesheet" href="../static/css/all.css">
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="../static/css/header.css">
 </head>
 <body>
+  <header>
+    <button>Mode</button>
+  </header>
   <div class="container">
     <div class="signin">
         <form class="signin-form">
@@ -34,7 +38,10 @@
                     <i class="fa-brands fa-linkedin"></i>
                 </a>
             </div>
-            <p class="account-next">Don't have an account? <a href="#" id="signup-btn2">Sign up</a></p>
+            <p class="account-next">
+                Don't have an account? 
+                <a href="#" id="signup_btn2">Sign up</a>
+            </p>
         </form>
         <form class="signup-form">
             <h2 class="title">Sign Up</h2>
@@ -66,7 +73,10 @@
                     <i class="fa-brands fa-linkedin"></i>
                 </a>
             </div>
-            <p class="account-next">Already have an account? <a href="#" id="signin-btn2">Sign in</a></p>
+            <p class="account-next">
+                Already have an account? 
+                <a href="#" id="signin_btn2">Sign in</a>
+            </p>
         </form>
     </div>
     <div class="panels-container">
@@ -76,7 +86,7 @@
                 <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellat magnam maiores recusandae, edita sed atque illum, quo sequi doloremque est.</p>
                 <button class="btn" id="signin_btn">Sign in</button>
             </div>
-            <img src="images/sign in.jpeg" alt="" class="images">
+            <img src="../static/images/sign-in.jpeg" alt="" class="images">
         </div>
         <div class="panel right-panel">
             <div class="content">
@@ -84,10 +94,10 @@
                 <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellat magnam maiores recusandae, facere, eius molestiae expedita sed atque illum.</p>
                 <button class="btn" id="signup_btn">Sign up</button>
             </div>
-            <img src="images/sign up.jpeg" alt="" class="images">
+            <img src="../static/images/sign-up.jpeg" alt="" class="images">
         </div>
     </div>
 </div>
-<script src="./js/login_dynamic.js"></script>
+  <script src="../static/js/login_dynamic.js"></script>
 </body>
 </html>
