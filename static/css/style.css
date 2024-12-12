@@ -133,6 +133,7 @@ form.signup-form{
 }
 
 a {
+    color: var(--fourth-background-color);
     text-decoration: none;
 }
 
