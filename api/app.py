@@ -1,7 +1,9 @@
 """app.py"""
 
 from typing import Union
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from api.models.users import User
 from api.models.notes import Note
@@ -10,6 +12,8 @@ from api.models.notes import Note
 router = APIRouter()
 user_model = User()
 note_model = Note()
+
+templates = Jinja2Templates(directory="templates")
 
 
 class Test(BaseModel):
@@ -34,9 +38,15 @@ async def home():
 # for get html register
 
 
-# @router.get("/login")
-# for get html login
-
+@router.get("/login", response_class=HTMLResponse)
+async def login(request: Request):
+    """Login Page"""
+    return templates.TemplateResponse(
+        request = request,
+        name = "login_page.html",
+        context = {"title": "Login Page"}
+    )
+    # return {"message": "Welcome in Login"}
 
 @router.put("/index")
 async def index(items: Test):
