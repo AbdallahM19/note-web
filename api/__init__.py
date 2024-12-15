@@ -1,6 +1,7 @@
 """__init__.py"""
 
 from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from api.app import router
 from api.routers.user_api import router as user_router
@@ -15,6 +16,8 @@ app.add_middleware(SessionMiddleware, secret_key="mysecretkey2024")
 app.include_router(router)
 app.include_router(user_router)
 app.include_router(note_router)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.on_event("startup")
