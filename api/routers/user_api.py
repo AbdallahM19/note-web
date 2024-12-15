@@ -2,17 +2,20 @@
 
 from typing import Union, Optional, Annotated  #, List
 from uuid import uuid4
-from fastapi import APIRouter, HTTPException, Query, Path, Depends, Body, Request, status
+from fastapi import APIRouter, HTTPException, Query, Path, Depends, Body, Request, status, Form
 from api.app import user_model
 from api.database import UserDb
 from api.models.users import BaseUser, UserIn, UserDetails
 from api.utils.session import SessionManager, get_session_manager
+from re import match
 
 
 router = APIRouter(
     prefix='/api',
     tags=['user-api']
 )
+
+email_regex = r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).([a-z]+)$"
 
 
 @router.get("/users/{field}")
@@ -58,19 +61,28 @@ async def get_user(
 
 @router.post("/users/login")
 async def login(
-    request: Request, password: str,
-    username: Annotated[Optional[str], Query(min_length=3, max_length=50)] = None,
-    email: Annotated[Optional[str], Query(
-        max_length=100,
-        pattern=r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).([a-z]+)$"
-    )] = None
+    request: Request,
+    username: Annotated[str, Form(min_length=3, max_length=100)],
+    password: Annotated[str, Form(...)]
+    # password: str,
+    # username: Annotated[Optional[str], Query(min_length=3, max_length=50)] = None,
+    # email: Annotated[Optional[str], Query(
+    #     max_length=100,
+    #     pattern=r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).([a-z]+)$"
+    # )] = None
 ) -> BaseUser:
     """Login a user and set session data."""
-    if not username and not email:
+    if not username:
         raise HTTPException(
             status_code=400,
             detail="Username or email is required"
         )
+
+    email = None
+
+    if match(email_regex, username):
+        email = username
+        username = None
 
     try:
         current_user = user_model.check_if_user_exists(username=username, email=email)
@@ -104,10 +116,16 @@ async def login(
 @router.post("/users/register", status_code=status.HTTP_201_CREATED)
 async def register(
     request: Request,
-    username: Annotated[str, Query(min_length=3, max_length=50)],
-    email: str,
-    password: str,
-    date_of_birth: Optional[str] = None,
+    username: Annotated[str, Form(min_length=3, max_length=50)],
+    email: Annotated[str, Form(
+        max_length=100,
+        pattern=email_regex
+    )],
+    password: Annotated[str, Form(...)],
+    # username: Annotated[str, Query(min_length=3, max_length=50)],
+    # email: str,
+    # password: str,
+    # date_of_birth: Optional[str] = None,
 ) -> BaseUser:
     """Register a new user"""
     try:
@@ -125,7 +143,7 @@ async def register(
             username=username,
             email=email,
             hashed_password=password,
-            date_of_birth=date_of_birth,
+            # date_of_birth=date_of_birth,
             session_id=str(uuid4())
         )
 
