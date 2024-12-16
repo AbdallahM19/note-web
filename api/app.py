@@ -39,12 +39,16 @@ async def home():
 
 
 @router.get("/login", response_class=HTMLResponse)
-async def login(request: Request):
+async def login(req: Request):
     """Login Page"""
     return templates.TemplateResponse(
-        request = request,
+        request = req,
         name = "login_page.html",
-        context = {"title": "Login Page"}
+        context = {
+            "title": "Login Page",
+            "mode": "dark-mode",
+            "types_container": "",
+        }
     )
     # return {"message": "Welcome in Login"}
 
