@@ -25,13 +25,17 @@ class Test(BaseModel):
 @router.get("/")
 async def root():
     """root"""
-    return {"message": "Hello World"}
+    return {
+        "message": "Hello World"
+    }
 
 
 @router.get("/home")
 async def home():
     """Home Page"""
-    return {"message": "Welcome in Home"}
+    return {
+        "message": "Welcome in Home"
+    }
 
 
 @router.get("/register", response_class=HTMLResponse)
