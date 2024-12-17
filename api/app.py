@@ -60,7 +60,6 @@ async def login(req: Request):
             "types_container": "",
         }
     )
-    # return {"message": "Welcome in Login"}
 
 @router.put("/index")
 async def index(items: Test):
