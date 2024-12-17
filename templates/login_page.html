@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Login Form</title>
+  <title>{{ title }}</title>
   <link rel="stylesheet" href="../static/css/all.css">
   <link rel="stylesheet" href="../static/css/style.css">
   <link rel="stylesheet" href="../static/css/header.css">
   <link rel="stylesheet" href="../static/css/dark_mode.css">
 </head>
-<body>
+<body class="{{ mode }}">
   <header>
     <button id="darkModeToggle">
       <img src="../static/images/dark-mode.png" alt="Light Mode" id="modeIcon" width="24" height="24">
     </button>
   </header>
-  <div class="container">
+  <div class="container {{ types_container }}">
     <div class="signin">
         <form class="signin-form">
             <h2 class="title">Sign In</h2>
