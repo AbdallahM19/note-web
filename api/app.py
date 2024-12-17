@@ -34,8 +34,18 @@ async def home():
     return {"message": "Welcome in Home"}
 
 
-# @router.get("/register")
-# for get html register
+@router.get("/register", response_class=HTMLResponse)
+async def register(req: Request):
+    """Register Page"""
+    return templates.TemplateResponse(
+        request = req,
+        name = "login_page.html",
+        context = {
+            "title": "Register Page",
+            "mode": "dark-mode",
+            "types_container": "sign-up-mode signup-mode2",
+        }
+    )
 
 
 @router.get("/login", response_class=HTMLResponse)
