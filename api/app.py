@@ -46,7 +46,6 @@ async def register(req: Request):
         name = "login_page.html",
         context = {
             "title": "Register Page",
-            "mode": "dark-mode",
             "types_container": "sign-up-mode signup-mode2",
         }
     )
@@ -60,7 +59,6 @@ async def login(req: Request):
         name = "login_page.html",
         context = {
             "title": "Login Page",
-            "mode": "dark-mode",
             "types_container": "",
         }
     )
