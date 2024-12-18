@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ title }}</title>
   <link rel="stylesheet" href="../static/css/all.css">
   <link rel="stylesheet" href="../static/css/style.css">
   <link rel="stylesheet" href="../static/css/header.css">
   <link rel="stylesheet" href="../static/css/dark_mode.css">
 </head>
-<body class="{{ mode }}">
+<body>
+  <!-- Header Section -->
   <header>
     <button id="darkModeToggle">
       <img src="../static/images/dark-mode.png" alt="Light Mode" id="modeIcon" width="24" height="24">
     </button>
   </header>
+
   <div class="container {{ types_container }}">
     <div class="signin">
         <form class="signin-form">
@@ -100,8 +104,9 @@
             <img src="../static/images/sign-up.jpeg" alt="" class="images">
         </div>
     </div>
-</div>
-  <script src="../static/js/login_dynamic.js"></script>
-  <script src="../static/js/mode_color.js"></script>
+  </div>
+
+  <script type="module" src="../static/js/mode_color.js"></script>
+  <script type="module" src="../static/js/login_dynamic.js"></script>
 </body>
 </html>
