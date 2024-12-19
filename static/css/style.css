@@ -58,7 +58,7 @@ form.signup-form{
 
 .title {
     font-size: 35px;
-    color: var(--title-color);
+    color: rgb(0, 0, 0);
     margin-bottom: 10px;
 }
 
@@ -96,7 +96,7 @@ form.signup-form{
     height: 50px;
     border: none;
     border-radius: 50px;
-    background: var(--title-color);
+    background: rgb(0, 0, 0);
     color: white;
     font-weight: 600;
     font-size: 16px;
@@ -167,9 +167,11 @@ a {
 }
 
 .images {
-  width: 100%;
+  width: 60%;
   transition: 0.8s ease-in-out;
   transition-delay:0.5s;
+  border-radius: 50%;
+  padding: 10px;
 }
 
 .left-panel {
@@ -180,11 +182,13 @@ a {
   color: #fff;
   transition: 0.8s ease-in-out;
   transition-delay: 0.5s;
+  margin-bottom: 10px;
 }
 
 .panel h3 {
     font-size: 24px;
     font-weight: 600;
+    /* margin-bottom: 15px; */
 }
 
 .panel p {
@@ -237,36 +241,42 @@ a {
     width: 100vw;
     height: 92vh;
   }
+
+  .images {
+    width: 75%;
+  }
 }
 
 @media (max-width:638px) {
-    .container::before{
-        display: none;
-    }
-    form{
-        width: 80%;
-    }
-    form.signup-form{
-        display: none;
-    }
-    .panel{
-        display: none;
-    }
-    .container.signup-mode2 form.signup-form {
-        display: flex;
-        opacity: 1;
-        visibility: visible;
-    }
-    .container.signup-mode2 form.signin-form {
-        display: none;
-    }
-    .panels-container{
-        display: none;
-    }
+  .container::before{
+    display: none;
+  }
+
+  form.signup-form{
+    display: none;
+  }
+
+  .panel{
+    display: none;
+  }
+
+  .container.signup-mode2 form.signup-form {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .container.signup-mode2 form.signin-form {
+    display: none;
+  }
+
+  .panels-container{
+    display: none;
+  }
 }
 
 @media (max-width:320px) {
-    form{
-        width: 85%;
-    }
+  form{
+    width: 85%;
+  }
 }

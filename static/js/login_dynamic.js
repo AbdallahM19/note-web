@@ -1,5 +1,3 @@
-import { darkModeDy } from "./mode_color.js";
-
 document.addEventListener("DOMContentLoaded", () => {
   const signin_btn = document.querySelector("#signin_btn");
   const signup_btn = document.querySelector("#signup_btn");
@@ -28,6 +26,4 @@ document.addEventListener("DOMContentLoaded", () => {
     container.classList.remove("signup-mode2");
     container.classList.remove("sign-up-mode");
   });
-
-  darkModeDy();
 });
