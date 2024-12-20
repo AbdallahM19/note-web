@@ -63,7 +63,7 @@ async def get_user(
 async def login(
     request: Request,
     username: Annotated[str, Form(min_length=3, max_length=100)],
-    password: Annotated[str, Form(...)]
+    password: Annotated[str, Form()]
     # password: str,
     # username: Annotated[Optional[str], Query(min_length=3, max_length=50)] = None,
     # email: Annotated[Optional[str], Query(
@@ -121,7 +121,7 @@ async def register(
         max_length=100,
         pattern=email_regex
     )],
-    password: Annotated[str, Form(...)],
+    password: Annotated[str, Form()],
     # username: Annotated[str, Query(min_length=3, max_length=50)],
     # email: str,
     # password: str,
