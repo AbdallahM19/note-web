@@ -12,7 +12,7 @@ def load_current_user(func):
         if session_manager.user_id or session_manager.session_id:
             return RedirectResponse(
                 url="/home",
-                status_code=301,
+                status_code=302,
             )
-        return func(*args, **kwargs)
+        return await func(req, *args, **kwargs)
     return wrapper
