@@ -3,6 +3,7 @@
 from typing import Union, Optional, Annotated  #, List
 from uuid import uuid4
 from fastapi import APIRouter, HTTPException, Query, Path, Depends, Body, Request, status, Form
+from fastapi.responses import RedirectResponse
 from api.app import user_model
 from api.database import UserDb
 from api.models.users import BaseUser, UserIn, UserDetails
@@ -103,7 +104,8 @@ async def login(
         request.session["id"] = current_user.id
         request.session["session_id"] = current_user.session_id
 
-        return current_user
+        # return current_user
+        return RedirectResponse(url="/home", status_code=302)
     except HTTPException as http_ex:
         raise http_ex
     except Exception as e:
@@ -150,7 +152,8 @@ async def register(
         request.session["id"] = current_user.id
         request.session["session_id"] = current_user.session_id
 
-        return current_user
+        # return current_user
+        return RedirectResponse(url="/home", status_code=302)
     except HTTPException as http_ex:
         raise http_ex
     except Exception as e:
