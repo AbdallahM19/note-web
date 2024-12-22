@@ -9,12 +9,12 @@ from api.models.notes import BaseNote, NoteDetails
 from api.utils.session import SessionManager, get_session_manager
 
 router = APIRouter(
-    prefix='/api',
+    prefix='/api/notes',
     tags=['note-api']
 )
 
 
-@router.get("/notes/{field}")
+@router.get("/{field}")
 async def get_notes_by_field(
     field: Optional[str],
     query: Optional[str] = None,
@@ -50,7 +50,7 @@ async def get_notes_by_field(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/notes/create", response_model=NoteDetails, status_code=status.HTTP_201_CREATED)
+@router.post("/create", response_model=NoteDetails, status_code=status.HTTP_201_CREATED)
 async def create_note(
     note_data: BaseNote, session: SessionManager = Depends(get_session_manager)
 ) -> dict:
@@ -63,7 +63,7 @@ async def create_note(
     return new_note
 
 
-@router.put("/notes/{note_id}/update", response_model=NoteDetails)
+@router.put("/{note_id}/update", response_model=NoteDetails)
 async def update_note(
     note_id: Annotated[
         int, Path(
@@ -84,7 +84,7 @@ async def update_note(
     return updated_note
 
 
-@router.delete("/notes/{note_id}/delete")
+@router.delete("/{note_id}/delete")
 async def delete_note_data_permanently(
     note_id: Annotated[
         int, Path(

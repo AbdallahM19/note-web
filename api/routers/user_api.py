@@ -12,14 +12,14 @@ from re import match
 
 
 router = APIRouter(
-    prefix='/api',
+    prefix='/api/users',
     tags=['user-api']
 )
 
 email_regex = r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).([a-z]+)$"
 
 
-@router.get("/users/{field}")
+@router.get("/{field}")
 async def get_user(
     field: Optional[str],
     user_id: Optional[int] = None,
@@ -60,7 +60,7 @@ async def get_user(
     raise HTTPException(status_code=400, detail=users_data)
 
 
-@router.post("/users/login")
+@router.post("/login")
 async def login(
     request: Request,
     username: Annotated[str, Form(min_length=3, max_length=100)],
@@ -115,7 +115,7 @@ async def login(
         )
 
 
-@router.post("/users/register", status_code=status.HTTP_201_CREATED)
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(
     request: Request,
     username: Annotated[str, Form(min_length=3, max_length=50)],
@@ -163,7 +163,7 @@ async def register(
         ) from e
 
 
-@router.put("/users/{user_id}/update")
+@router.put("/{user_id}/update")
 async def update_user_data(
     user_id: Annotated[
         Union[int, str], Path(
@@ -252,7 +252,7 @@ async def update_user_data(
         )
 
 
-@router.delete("/users/{user_id}/delete")
+@router.delete("/{user_id}/delete")
 async def delete_user_account_completely(
     user_id: Annotated[
         Union[str, int], Path(
@@ -279,7 +279,7 @@ async def delete_user_account_completely(
     )
 
 
-@router.delete("/users/logout")
+@router.delete("/logout")
 async def logout_user(request: Request) -> dict:
     """Logout user"""
     request.session.clear()
