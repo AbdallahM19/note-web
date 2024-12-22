@@ -62,7 +62,7 @@ async def get_user(
 
 @router.post("/login")
 async def login(
-    request: Request,
+    req: Request,
     username: Annotated[str, Form(min_length=3, max_length=100)],
     password: Annotated[str, Form()]
     # password: str,
@@ -101,8 +101,8 @@ async def login(
             )
 
         # Set session data for authenticated user
-        request.session["id"] = current_user.id
-        request.session["session_id"] = current_user.session_id
+        req.session["id"] = current_user.id
+        req.session["session_id"] = current_user.session_id
 
         # return current_user
         return RedirectResponse(url="/home", status_code=302)
@@ -117,7 +117,7 @@ async def login(
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(
-    request: Request,
+    req: Request,
     username: Annotated[str, Form(min_length=3, max_length=50)],
     email: Annotated[str, Form(
         max_length=100,
@@ -149,8 +149,8 @@ async def register(
             session_id=str(uuid4())
         )
 
-        request.session["id"] = current_user.id
-        request.session["session_id"] = current_user.session_id
+        req.session["id"] = current_user.id
+        req.session["session_id"] = current_user.session_id
 
         # return current_user
         return RedirectResponse(url="/home", status_code=302)
@@ -260,12 +260,12 @@ async def delete_user_account_completely(
             description="This will delete the user account completely.",
         )
     ],
-    request: Request
+    req: Request
 ) -> dict:
     """Delete user Account permanently"""
     if isinstance(user_id, str) and user_id == "me":
-        user_id = request.session.get("id")
-        request.session.clear()
+        user_id = req.session.get("id")
+        req.session.clear()
 
     if user_model.delete_user(user_id):
         return {
@@ -280,8 +280,8 @@ async def delete_user_account_completely(
 
 
 @router.delete("/logout")
-async def logout_user(request: Request) -> dict:
+async def logout_user(req: Request) -> dict:
     """Logout user"""
-    request.session.clear()
+    req.session.clear()
 
     return {"message": "User logged out successfully", "status": 200}
