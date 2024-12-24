@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from api.settings import load_current_user
+from api.settings import load_current_user, require_login
 from api.models.users import User
 from api.models.notes import Note
 
@@ -32,10 +32,14 @@ async def root():
 
 
 @router.get("/home")
-async def home():
+@require_login
+async def home(req: Request):
     """Home Page"""
+    current_user = user_model.get_user_by_session_id(
+        req.session.get("session_id")
+    )
     return {
-        "message": "Welcome in Home"
+        "message": f"Welcome {current_user.username} in Home"
     }
 
 
