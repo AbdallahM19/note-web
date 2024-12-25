@@ -1,5 +1,8 @@
+"""settings.py"""
+
+from functools import wraps
 from fastapi import Request, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from api.utils.session import SessionManager, get_session_manager
 from functools import wraps
 

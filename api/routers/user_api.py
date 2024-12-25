@@ -1,14 +1,14 @@
 """user_api.py"""
 
-from typing import Union, Optional, Annotated  #, List
+from typing import Union, Optional, Annotated
 from uuid import uuid4
-from fastapi import APIRouter, HTTPException, Query, Path, Depends, Body, Request, status, Form
+from re import match
+from fastapi import APIRouter, HTTPException, Path, Depends, Body, Request, status, Form
 from fastapi.responses import RedirectResponse
 from api.app import user_model
 from api.database import UserDb
-from api.models.users import BaseUser, UserIn, UserDetails
+from api.models.users import BaseUser, UserIn
 from api.utils.session import SessionManager, get_session_manager
-from re import match
 
 
 router = APIRouter(
@@ -112,7 +112,7 @@ async def login(
         raise HTTPException(
             status_code=500,
             detail=f"An error occurred while logging the user: {str(e)}"
-        )
+        ) from e
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -249,7 +249,7 @@ async def update_user_data(
         raise HTTPException(
             status_code=400,
             detail=f"An error occurred while updating the user: {str(e)}"
-        )
+        ) from e
 
 
 @router.delete("/{user_id}/delete")
