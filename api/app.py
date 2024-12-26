@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from api.settings import load_current_user, require_login
+from api.settings import SessionHandler
 from api.models.users import User
 from api.models.notes import Note
 
@@ -32,7 +32,7 @@ async def root():
 
 
 @router.get("/home")
-@require_login
+@SessionHandler(action="require_login")
 async def home(req: Request):
     """Home Page"""
     current_user = user_model.get_user_by_session_id(
@@ -44,7 +44,7 @@ async def home(req: Request):
 
 
 @router.get("/register", response_class=HTMLResponse)
-@load_current_user
+@SessionHandler(action="load_current_user")
 async def register(req: Request):
     """Register Page"""
     return templates.TemplateResponse(
@@ -58,7 +58,7 @@ async def register(req: Request):
 
 
 @router.get("/login", response_class=HTMLResponse)
-@load_current_user
+@SessionHandler(action="load_current_user")
 async def login(req: Request):
     """Login Page"""
     return templates.TemplateResponse(
