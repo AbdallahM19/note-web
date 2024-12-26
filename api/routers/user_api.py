@@ -16,7 +16,7 @@ router = APIRouter(
     tags=['user-api']
 )
 
-email_regex = r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).([a-z]+)$"
+EMAIL_REGEX = r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).([a-z]+)$"
 
 
 @router.get("/{field}")
@@ -81,7 +81,7 @@ async def login(
 
     email = None
 
-    if match(email_regex, username):
+    if match(EMAIL_REGEX, username):
         email = username
         username = None
 
@@ -121,7 +121,7 @@ async def register(
     username: Annotated[str, Form(min_length=3, max_length=50)],
     email: Annotated[str, Form(
         max_length=100,
-        pattern=email_regex
+        pattern=EMAIL_REGEX
     )],
     password: Annotated[str, Form()],
     # username: Annotated[str, Query(min_length=3, max_length=50)],
