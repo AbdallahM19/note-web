@@ -5,7 +5,7 @@ from fastapi import Request, HTTPException
 from fastapi.responses import RedirectResponse
 from api.utils.session import SessionManager, get_session_manager
 
-a
+
 class SessionHandler():
     """Handles session management"""
     def __init__(self, action: str):
@@ -35,24 +35,18 @@ class SessionHandler():
 
             session_manager: SessionManager = await get_session_manager(req)
 
-            print(f"{session_manager.session_id}")
 
-            if self.action == "load_current_user" and session_manager.session_id:
-                print("-----------------------------")
-                print("Current user: Exist")
-                print("-----------------------------")
-                return RedirectResponse(
-                    url="/home",
-                    status_code=302,
-                )
-            elif self.action == "require_login" and not session_manager.session_id:
-                print("-----------------------------")
-                print("Current user: Not Exist")
-                print("-----------------------------")
-                return RedirectResponse(
-                    url="/login",
-                    status_code=302,
-                )
+            match self.action:
+                case "load_current_user" if session_manager.session_id:
+                    return RedirectResponse(
+                        url="/home",
+                        status_code=302,
+                    )
+                case "require_login" if not session_manager.session_id:
+                    return RedirectResponse(
+                        url="/login",
+                        status_code=302,
+                    )
 
             return await func(*args, **kwargs)
         return wrapper
