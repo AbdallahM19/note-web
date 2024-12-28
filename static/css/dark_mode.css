@@ -13,6 +13,7 @@
   --input-bg: rgb(255, 255, 255);
   --btn-bg: rgb(0, 123, 255);
   --btn-color: rgb(255, 255, 255);
+  --error-background: rgb(171, 79, 14);
 }
 
 * {
@@ -28,6 +29,7 @@ body {
   /* --title-color: rgb(0, 0, 0); */
   --border-input: rgb(192, 80, 0);
   --social-icon-color: rgb(171, 79, 14);
+  --error-background: rgba(255, 115, 0, 0.555);
 
   display: flex;
   font-family: sans-serif;
@@ -46,6 +48,7 @@ body.dark-mode {
   /* --title-color: rgb(0, 0, 0); */
   --border-input: rgb(0, 89, 255);
   --social-icon-color: rgb(0, 89, 255);
+  --error-background: rgb(22, 25, 35);
 
   background-color: var(--primary-background-color);
 }
