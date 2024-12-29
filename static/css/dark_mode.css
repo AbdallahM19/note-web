@@ -31,7 +31,7 @@ body {
   /* --title-color: rgb(0, 0, 0); */
   --border-input: rgb(192, 80, 0);
   --social-icon-color: rgb(171, 79, 14);
-  --error-background: rgba(255, 115, 0, 0.555);
+  --error-background: rgb(220, 92, 0);
   --error-info-text: rgb(0, 0, 0);
   --error-info-p: rgb(0, 0, 0);
 
