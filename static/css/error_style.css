@@ -24,7 +24,7 @@
 
 .error-info h1 {
   font-size: 2em;
-  color: rgb(240, 59, 52);
+  color: var(--error-info-text);
   margin-bottom: 15px;
 }
 .error-info p
@@ -42,5 +42,5 @@
 }
 .error-info span {
   font-weight: bold;
-  color: #333;
+  color: var(--error-info-p);
 }

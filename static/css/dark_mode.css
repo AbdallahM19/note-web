@@ -14,6 +14,8 @@
   --btn-bg: rgb(0, 123, 255);
   --btn-color: rgb(255, 255, 255);
   --error-background: rgb(171, 79, 14);
+  --error-info-text: rgb(240, 59, 52);
+  --error-info-p: rgb(0, 0, 0);
 }
 
 * {
@@ -30,6 +32,8 @@ body {
   --border-input: rgb(192, 80, 0);
   --social-icon-color: rgb(171, 79, 14);
   --error-background: rgba(255, 115, 0, 0.555);
+  --error-info-text: rgb(0, 0, 0);
+  --error-info-p: rgb(0, 0, 0);
 
   display: flex;
   font-family: sans-serif;
@@ -49,6 +53,8 @@ body.dark-mode {
   --border-input: rgb(0, 89, 255);
   --social-icon-color: rgb(0, 89, 255);
   --error-background: rgb(22, 25, 35);
+  --error-info-text: rgb(240, 59, 52);
+  --error-info-p: rgb(190, 190, 190);
 
   background-color: var(--primary-background-color);
 }
