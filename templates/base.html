@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Default Title{% endblock %}</title>
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="../static/css/header.css">
+  <link rel="stylesheet" href="../static/css/dark_mode.css">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <button id="darkModeToggle">
+      <img src="../static/images/dark-mode.png" alt="Light Mode" id="modeIcon" width="24" height="24">
+    </button>
+  </header>
+
+  <!-- Main Content / can be [container, error_container] -->
+  {% block content %}{% endblock %}
+
+  <script src="../static/js/mode_color.js"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
