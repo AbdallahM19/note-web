@@ -1,6 +1,7 @@
 """users.py"""
 
 from typing import Union, Optional
+from os import makedirs, path
 from pydantic import BaseModel
 from sqlalchemy import or_, and_
 from sqlalchemy.exc import SQLAlchemyError
@@ -20,6 +21,7 @@ class UserIn(BaseUser):
 
 
 class UserDetails(BaseUser):
+    """User account model with additional details"""
     id: int
     hashed_password: Optional[str] = None
     session_id: Optional[str] = None
@@ -31,6 +33,7 @@ class User():
     """User Class"""
     def __init__(self):
         self.sess = get_session()
+        self.path_folder = "./images/profile"
 
     def get_user_by_id(self, user_id):
         """Get user by id function"""
@@ -176,6 +179,21 @@ class User():
             raise SQLAlchemyError(f"Error updating user account: {e}") from e
         finally:
             self.sess.close()
+
+    async def create_dir_if_not_exists(self, user_id, file):
+        """Create a directory if it doesn't exist, and save the file."""
+        user_folder = path.join(self.path_folder, str(user_id))
+
+        if not path.exists(user_folder):
+            makedirs(user_folder)
+
+        file_name = f"current_image{path.splitext(file.filename)[1]}"
+
+        file_location = path.join(user_folder, file_name)
+        with open(file_location, "wb") as f:
+            f.write(await file.read())
+
+        return True
 
     def delete_user(self, user_id: int) -> bool:
         """Delete user Account permanently from database"""
