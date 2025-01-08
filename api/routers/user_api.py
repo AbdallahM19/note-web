@@ -3,7 +3,8 @@
 from typing import Union, Optional, Annotated
 from uuid import uuid4
 from re import match
-from fastapi import APIRouter, HTTPException, Path, Depends, Body, Request, status, Form
+from fastapi import APIRouter, HTTPException, Path, Depends, Body, Request, status, Form,\
+    File, UploadFile
 from fastapi.responses import RedirectResponse
 from api.app import user_model
 from api.database import UserDb
@@ -249,6 +250,53 @@ async def update_user_data(
         raise HTTPException(
             status_code=400,
             detail=f"An error occurred while updating the user: {str(e)}"
+        ) from e
+
+
+@router.post("/{user_id}/profile-image")
+async def update_user_profile_image(
+    user_id: Annotated[
+        Union[int, str], Path(
+            title="Update user by id or 'me'",
+            description="Update user data by id or 'me' to update current user data",
+            examples=[{"user_id": 14}, {"user_id": "me"}]
+        )
+    ],
+    file: Annotated[
+        UploadFile, File(
+            title="Profile image",
+            description="Profile image to be uploaded",
+            examples=[{"image": "image.jpg"}]
+        )
+    ],
+    session: SessionManager = Depends(get_session_manager)
+):
+    """Update user profile image"""
+    try:
+        if isinstance(user_id, str) and user_id.isdigit():
+            user_id = int(user_id)
+
+        if user_id == "me":
+            user_id = session.user_id
+
+        profile_image = await user_model.create_dir_if_not_exists(user_id, file)
+
+        if profile_image:
+            return {
+                "message": "Profile image updated successfully",
+                "profile_image": profile_image,
+                "status": 200
+            }
+        raise HTTPException(
+            status_code=400,
+            detail="Failed to update user profile image"
+        )
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"An error occurred while updating the profile image: {str(e)}"
         ) from e
 
 
