@@ -5,7 +5,7 @@ from uuid import uuid4
 from re import match
 from fastapi import APIRouter, HTTPException, Path, Depends, Body, Request, status, Form,\
     File, UploadFile
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 from api.app import user_model
 from api.database import UserDb
 from api.models.users import BaseUser, UserIn
@@ -253,6 +253,43 @@ async def update_user_data(
         ) from e
 
 
+@router.get("/{user_id}/profile-image")
+async def get_user_profile_image(
+    user_id: Annotated[
+        Union[int, str], Path(
+            title="Update user by id or 'me'",
+            description="Update user data by id or 'me' to update current user data",
+            examples=[{"user_id": 14}, {"user_id": "me"}]
+        )
+    ],
+    session: SessionManager = Depends(get_session_manager)
+):
+    """Get user profile image"""
+    try:
+        if isinstance(user_id, str) and user_id.isdigit():
+            user_id = int(user_id)
+
+        if user_id == "me":
+            user_id = session.user_id
+
+        location_file = await user_model.load_user_profile_image(user_id)
+
+        if location_file:
+            return FileResponse(location_file, media_type="image/jpeg")
+            # return Response(content=open(location_file, 'rb').read(), media_type="image/jpeg")
+        raise HTTPException(
+            status_code=404,
+            detail="User profile image not found"
+        )
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"An error occurred while getting the user profile image: {str(e)}"
+        ) from e
+
+
 @router.post("/{user_id}/profile-image")
 async def update_user_profile_image(
     user_id: Annotated[
@@ -279,12 +316,12 @@ async def update_user_profile_image(
         if user_id == "me":
             user_id = session.user_id
 
-        profile_image = await user_model.create_dir_if_not_exists(user_id, file)
+        location_file = await user_model.create_dir_if_not_exists(user_id, file)
 
-        if profile_image:
+        if location_file:
             return {
                 "message": "Profile image updated successfully",
-                "profile_image": profile_image,
+                "profile_image": location_file,
                 "status": 200
             }
         raise HTTPException(
