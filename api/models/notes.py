@@ -1,7 +1,7 @@
 """notes.py"""
 
 from typing import Union, Optional
-from datetime import datetime, timezone
+from datetime import datetime
 # from sqlalchemy import and_, or_
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import SQLAlchemyError
@@ -19,6 +19,7 @@ class BaseNote(BaseModel):
 
 
 class NoteDetails(BaseNote):
+    """Class note with additional fields [id]"""
     id: int
 
 
@@ -170,6 +171,7 @@ class Note():
         finally:
             self.sess.close()
 
+    @classmethod
     def convert_class_note_to_object(cls, note: NoteDb) -> dict:
         """Converts a Note_db object to a Note dict"""
         return {
