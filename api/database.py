@@ -28,6 +28,7 @@ class UserDb(Base):
     time_created = Column(DateTime, default=datetime.now)
     last_opened = Column(DateTime, default=datetime.now)
     date_of_birth = Column(Text, default=None)
+    profile_image = Column(Text, default=None)
 
 
 class NoteDb(Base):
