@@ -70,12 +70,24 @@ async def login(req: Request):
         }
     )
 
-@router.put("/index")
-async def index(items: Test):
+
+@router.get("/index")
+async def index():
     """index Page"""
-    print(
-        f"\n\nTitle: {items.title}\nSearch: {items.search}\n\n"
-    )
+    content = """
+        <body>
+            <img src="/api/users/me/profile-image">
+        </body>
+    """
+    return HTMLResponse(content=content)
+
+
+# @router.put("/index")
+# async def index(items: Test):
+#     """index Page"""
+#     print(
+#         f"\n\nTitle: {items.title}\nSearch: {items.search}\n\n"
+#     )
 
 
 # @router.get("/index")
