@@ -50,10 +50,7 @@ SessionLocal = sessionmaker(bind=engine)
 
 def create_database():
     """Creates the database schema."""
-    engine = create_engine(
-        f'mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}/'
-    )
-    with engine.connect() as connection:
+    with engine_without_db.connect() as connection:
         connection.execute(
             text(f"CREATE DATABASE IF NOT EXISTS {DATABASE}")
         )
@@ -61,21 +58,21 @@ def create_database():
 
 def create_tables():
     """Creates the tables in the database schema"""
-    engine = create_engine_and_connect()
     Base.metadata.create_all(engine)
     print("Tables created or already exist.")
 
 def drop_db():
     """Drops the database and all tables in it"""
-    engine = create_engine_and_connect()
     with engine.connect() as connection:
         connection.execute(
             text(f"DROP DATABASE IF EXISTS {DATABASE}")
         )
     print("Database 'note_db' dropped.")
 
-def get_session():
-    """Return a new session."""
-    engine = create_engine_and_connect()
-    session = sessionmaker(bind=engine)
-    return session()
+def get_db():
+    """Return a new session"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
