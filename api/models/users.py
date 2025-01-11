@@ -163,8 +163,18 @@ class User():
         except SQLAlchemyError as e:
             self.sess.rollback()
             raise SQLAlchemyError(f"Error updating user account: {e}") from e
-        finally:
-            self.sess.close()
+
+    async def load_user_profile_image(self, user_id):
+        """Load user profile image from files"""
+        try:
+            user_folder = f"{self.path_folder}/{str(user_id)}"
+
+            if not path.exists(user_folder):
+                return None
+
+            return self.sess.query(UserDb).filter(UserDb.id == user_id).first().profile_image
+        except SQLAlchemyError as e:
+            raise SQLAlchemyError(f"Error loading user profile image: {e}") from e
 
     async def create_dir_if_not_exists(self, user_id, file):
         """Create a directory if it doesn't exist, and save the file."""
