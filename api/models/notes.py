@@ -5,7 +5,7 @@ from datetime import datetime
 # from sqlalchemy import and_, or_
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import SQLAlchemyError
-from api.database import NoteDb, get_session
+from api.database import NoteDb, get_db
 
 
 
@@ -26,7 +26,7 @@ class NoteDetails(BaseNote):
 class Note():
     """Note Class"""
     def __init__(self):
-        self.sess = get_session()
+        self.sess = next(get_db())
 
     def get_note_by_id(self, note_id: int):
         """Fetches a note by its id."""
@@ -39,8 +39,6 @@ class Note():
             raise SQLAlchemyError(
                 f"An error occurred while fetching note by id: {e}"
             ) from e
-        finally:
-            self.sess.close()
 
     def get_all_notes(self, skip: Optional[int] = None, limit: Optional[int] = None):
         """Fetches all notes from the database."""
@@ -66,8 +64,6 @@ class Note():
             raise SQLAlchemyError(
                 f"An error occurred while fetching note by id: {e}"
             ) from e
-        finally:
-            self.sess.close()
 
     def search_notes(
         self, field: str, query: str,
@@ -104,8 +100,6 @@ class Note():
             raise SQLAlchemyError(
                 f"An error occurred while searching notes: {e}"
             ) from e
-        finally:
-            self.sess.close()
 
     def create_a_new_note(self, item: BaseNote) -> NoteDetails:
         """Creates a new note with the given content and title."""
@@ -120,14 +114,11 @@ class Note():
 
             self.sess.add(new_note)
             self.sess.commit()
-            
             self.sess.refresh(new_note)
 
             return new_note
         except Exception as e:
             raise SQLAlchemyError(f"An error occurred while creating a new note: {e}") from e
-        finally:
-            self.sess.close()
 
     def update_note_data(
         self,
@@ -155,8 +146,6 @@ class Note():
             return old_note
         except Exception as e:
             raise SQLAlchemyError(f"An error occurred while updating note data: {e}") from e
-        finally:
-            self.sess.close()
 
     def delete_note_by_id(self, note_id: int):
         """Deletes a note by its ID."""
@@ -168,8 +157,6 @@ class Note():
         except Exception as e:
             self.sess.rollback()
             raise SQLAlchemyError(f"An error occurred while deleting note by ID: {e}") from e
-        finally:
-            self.sess.close()
 
     @classmethod
     def convert_class_note_to_object(cls, note: NoteDb) -> dict:

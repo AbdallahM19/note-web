@@ -5,7 +5,7 @@ from os import makedirs, path
 from pydantic import BaseModel
 from sqlalchemy import or_, and_
 from sqlalchemy.exc import SQLAlchemyError
-from api.database import UserDb, get_session
+from api.database import UserDb, get_db
 
 
 class BaseUser(BaseModel):
@@ -31,9 +31,9 @@ class UserDetails(BaseUser):
 
 class User():
     """User Class"""
-    def __init__(self):
-        self.sess = get_session()
-        self.path_folder = "./images/profile"
+    def __init__(self, image_path: str = "./images/profile"):
+        self.sess = next(get_db())
+        self.path_folder = image_path
 
     def get_user_by_id(self, user_id):
         """Get user by id function"""
@@ -44,8 +44,6 @@ class User():
             return user
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"Error getting user by id: {str(e)}") from e
-        finally:
-            self.sess.close()
 
     def get_user_by_session_id(self, session_id):
         """Get user by session id function"""
@@ -56,8 +54,6 @@ class User():
             return user
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"Error getting user by session id: {str(e)}") from e
-        finally:
-            self.sess.close()
 
     def get_user_by_username(
         self, name: str, skip: Optional[int] = 0, limit: Optional[int] = None
@@ -74,8 +70,6 @@ class User():
             return users_data
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"Error getting user by username: {e}") from e
-        finally:
-            self.sess.close()
 
     def get_all_users_data(
         self,
@@ -96,8 +90,6 @@ class User():
             return users.all()
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"Error getting all users: {str(e)}") from e
-        finally:
-            self.sess.close()
 
     def check_if_user_exists(self, username: str, email: str) -> Optional[UserDb]:
         """Check if user exists in database"""
@@ -113,8 +105,6 @@ class User():
             return None
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"Error checking user existence: {str(e)}") from e
-        finally:
-            self.sess.close()
 
     # authenticate_user Not Used ⬇
     def authenticate_user(self, username: str, password: str) -> Union[dict, str]:
@@ -136,8 +126,6 @@ class User():
             return "Invalid username. user not exists"
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"Error authenticating user: {e}") from e
-        finally:
-            self.sess.close()
 
     def insert_new_user(self, **kwargs: dict):
         """Insert new user into database"""
@@ -150,8 +138,6 @@ class User():
         except SQLAlchemyError as e:
             self.sess.rollback()
             raise SQLAlchemyError(f"Error inserting new user: {e}") from e
-        finally:
-            self.sess.close()
 
     def update_user_account(self, kwargs: dict) -> dict:
         """Update user account information"""
@@ -211,8 +197,6 @@ class User():
         except SQLAlchemyError as e:
             self.sess.rollback()
             raise SQLAlchemyError(f"Error deleting user with id ({user_id}): {e}") from e
-        finally:
-            self.sess.close()
 
     @classmethod
     def convert_class_user_to_object(cls, user: UserDb) -> dict:
@@ -226,4 +210,5 @@ class User():
             "time_created": user.time_created,
             "last_opened": user.last_opened,
             "date_of_birth": user.date_of_birth,
+            "profile_image": user.profile_image,
         }
