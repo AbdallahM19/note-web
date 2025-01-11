@@ -43,11 +43,10 @@ class NoteDb(Base):
     time_edition = Column(DateTime)
 
 
-def create_engine_and_connect():
-    """Creates the engine and connects to the database."""
-    return create_engine(
-        f'mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}/{DATABASE}'
-    )
+engine_without_db = create_engine(f'mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}/')
+engine = create_engine(f'mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}/{DATABASE}')
+
+SessionLocal = sessionmaker(bind=engine)
 
 def create_database():
     """Creates the database schema."""
