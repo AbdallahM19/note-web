@@ -178,18 +178,26 @@ class User():
 
     async def create_dir_if_not_exists(self, user_id, file):
         """Create a directory if it doesn't exist, and save the file."""
-        user_folder = path.join(self.path_folder, str(user_id))
+        try:
+            user_folder = f"{self.path_folder}/{str(user_id)}"
 
-        if not path.exists(user_folder):
-            makedirs(user_folder)
+            if not path.exists(user_folder):
+                makedirs(user_folder)
 
-        file_name = f"current_image{path.splitext(file.filename)[1]}"
+            file_name = f"current_image{path.splitext(file.filename)[1]}"
 
-        file_location = path.join(user_folder, file_name)
-        with open(file_location, "wb") as f:
-            f.write(await file.read())
+            file_location = f"{user_folder}/{file_name}"
+            with open(file_location, "wb") as f:
+                f.write(await file.read())
 
-        return True
+            user = self.sess.query(UserDb).filter(UserDb.id == user_id).first()
+            user.profile_image = file_location
+            self.sess.commit()
+
+            return file_location
+        except SQLAlchemyError as e:
+            self.sess.rollback()
+            raise SQLAlchemyError(f"Error update profile image: {e}") from e
 
     def delete_user(self, user_id: int) -> bool:
         """Delete user Account permanently from database"""
