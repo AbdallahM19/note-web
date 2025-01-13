@@ -22,6 +22,7 @@ EMAIL_REGEX = r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).
 
 @router.get("/{field}")
 async def get_user(
+    # req: Request,
     field: Optional[str],
     user_id: Optional[int] = None,
     name: Optional[str] = None,
@@ -49,6 +50,12 @@ async def get_user(
 
     if not users_data:
         raise HTTPException(status_code=404, detail="User not found")
+        # return templates.TemplateResponse("error_page.html", {
+        #     "request": req,
+        #     "error_code": 404,
+        #     "error_message": "Not Found",
+        #     "error_detail": "User not found"
+        # }, 404)
 
     if isinstance(users_data, UserDb):
         return users_data
@@ -59,6 +66,12 @@ async def get_user(
         return users_data
 
     raise HTTPException(status_code=400, detail=users_data)
+    # return templates.TemplateResponse("error_page.html", {
+    #     "request": req,
+    #     "error_code": 400,
+    #     "error_message": "Bad Request",
+    #     "error_detail": users_data
+    # }, 400)
 
 
 @router.post("/login")
@@ -369,4 +382,5 @@ async def logout_user(req: Request) -> dict:
     """Logout user"""
     req.session.clear()
 
-    return {"message": "User logged out successfully", "status": 200}
+    # return {"message": "User logged out successfully", "status": 200}
+    return RedirectResponse(url="/login", status_code=303)
