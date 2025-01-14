@@ -74,7 +74,7 @@ async def get_user(
     # }, 400)
 
 
-@router.post("/login")
+@router.post("/login", status_code=status.HTTP_201_CREATED)
 async def login(
     req: Request,
     username: Annotated[str, Form(min_length=3, max_length=100)],
@@ -177,7 +177,7 @@ async def register(
         ) from e
 
 
-@router.put("/{user_id}/update")
+@router.put("/{user_id}/update", status_code=status.HTTP_200_OK)
 async def update_user_data(
     user_id: Annotated[
         Union[int, str], Path(
@@ -303,7 +303,7 @@ async def get_user_profile_image(
         ) from e
 
 
-@router.post("/{user_id}/profile-image")
+@router.post("/{user_id}/profile-image", status_code=status.HTTP_201_CREATED)
 async def update_user_profile_image(
     user_id: Annotated[
         Union[int, str], Path(
