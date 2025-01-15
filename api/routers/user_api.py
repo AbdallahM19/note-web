@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Path, Depends, Body, Request, stat
 from fastapi.responses import RedirectResponse, FileResponse
 from api.app import user_model
 from api.database import UserDb
-from api.models.users import BaseUser, UserIn
+from api.models.users import BaseUser, UserIn, UserField
 from api.utils.session import SessionManager, get_session_manager
 
 
@@ -23,8 +23,8 @@ EMAIL_REGEX = r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).
 @router.get("/{field}")
 async def get_user(
     # req: Request,
-    field: Optional[str],
-    user_id: Optional[int] = None,
+    field: UserField,
+    user_id: Union[int, str] = None,
     name: Optional[str] = None,
     skip: Optional[int] = None,
     limit: Optional[int] = None,
@@ -38,9 +38,12 @@ async def get_user(
 
     match field:
         case "me":
-            users_data = user_model.get_user_by_session_id(session.session_id)
-        case "id" if user_id:
-            users_data = user_model.get_user_by_id(user_id)
+            users_data = user_model.get_user_by_id(session.user_id)
+        case "id":
+            if isinstance(user_id, int):
+                users_data = user_model.get_user_by_id(user_id)
+            elif isinstance(user_id, str) and user_id == "me":
+                users_data = user_model.get_user_by_id(session.user_id)
         case "name" if name:
             users_data = user_model.get_user_by_username(name, skip, limit)
         case "list":
@@ -185,7 +188,7 @@ async def update_user_data(
             description="Update user data by id or 'me' to update current user data",
             examples=[
                 {
-                    "user_id": 14
+                    "user_id": 19
                 },
                 {
                     "user_id": "me"
@@ -272,7 +275,7 @@ async def get_user_profile_image(
         Union[int, str], Path(
             title="Update user by id or 'me'",
             description="Update user data by id or 'me' to update current user data",
-            examples=[{"user_id": 14}, {"user_id": "me"}]
+            examples=[{"user_id": 19}, {"user_id": "me"}]
         )
     ],
     session: SessionManager = Depends(get_session_manager)
@@ -309,7 +312,7 @@ async def update_user_profile_image(
         Union[int, str], Path(
             title="Update user by id or 'me'",
             description="Update user data by id or 'me' to update current user data",
-            examples=[{"user_id": 14}, {"user_id": "me"}]
+            examples=[{"user_id": 19}, {"user_id": "me"}]
         )
     ],
     file: Annotated[
@@ -356,6 +359,7 @@ async def delete_user_account_completely(
         Union[str, int], Path(
             title="The ID of the user to delete.",
             description="This will delete the user account completely.",
+            examples=[{"user_id": 19}, {"user_id": "me"}]
         )
     ],
     req: Request

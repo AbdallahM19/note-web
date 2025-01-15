@@ -2,10 +2,20 @@
 
 from typing import Union, Optional
 from os import makedirs, path
+from enum import Enum
 from pydantic import BaseModel
 from sqlalchemy import or_, and_
 from sqlalchemy.exc import SQLAlchemyError
 from api.database import UserDb, get_db
+
+
+# Predefined values
+class UserField(str, Enum):
+    """Enum for user fields"""
+    ME = "me"
+    ID = "id"
+    NAME = "name"
+    LIST = "list"
 
 
 class BaseUser(BaseModel):
