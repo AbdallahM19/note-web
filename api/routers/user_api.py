@@ -53,12 +53,6 @@ async def get_user(
 
     if not users_data:
         raise HTTPException(status_code=404, detail="User not found")
-        # return templates.TemplateResponse("error_page.html", {
-        #     "request": req,
-        #     "error_code": 404,
-        #     "error_message": "Not Found",
-        #     "error_detail": "User not found"
-        # }, 404)
 
     if isinstance(users_data, UserDb):
         return users_data
@@ -69,12 +63,6 @@ async def get_user(
         return users_data
 
     raise HTTPException(status_code=400, detail=users_data)
-    # return templates.TemplateResponse("error_page.html", {
-    #     "request": req,
-    #     "error_code": 400,
-    #     "error_message": "Bad Request",
-    #     "error_detail": users_data
-    # }, 400)
 
 
 @router.post("/login", status_code=status.HTTP_201_CREATED)
@@ -82,12 +70,6 @@ async def login(
     req: Request,
     username: Annotated[str, Form(min_length=3, max_length=100)],
     password: Annotated[str, Form()]
-    # password: str,
-    # username: Annotated[Optional[str], Query(min_length=3, max_length=50)] = None,
-    # email: Annotated[Optional[str], Query(
-    #     max_length=100,
-    #     pattern=r"^([a-z]+)((([a-z]+)|(_[a-z]+))?(([0-9]+)|(_[0-9]+))?)*@([a-z]+).([a-z]+)$"
-    # )] = None
 ) -> BaseUser:
     """Login a user and set session data."""
     if not username:
@@ -141,10 +123,6 @@ async def register(
         pattern=EMAIL_REGEX
     )],
     password: Annotated[str, Form()],
-    # username: Annotated[str, Query(min_length=3, max_length=50)],
-    # email: str,
-    # password: str,
-    # date_of_birth: Optional[str] = None,
 ) -> BaseUser:
     """Register a new user"""
     try:
@@ -386,5 +364,4 @@ async def logout_user(req: Request) -> dict:
     """Logout user"""
     req.session.clear()
 
-    # return {"message": "User logged out successfully", "status": 200}
     return RedirectResponse(url="/login", status_code=303)
