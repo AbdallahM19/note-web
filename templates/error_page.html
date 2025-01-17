@@ -3,33 +3,38 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error Page</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/header.css">
-    <link rel="stylesheet" href="../static/css/dark_mode.css">
-    <link rel="stylesheet" href="../static/css/error_style.css">
+    <!-- <title>Error Page</title> -->
+    <title>{{ error_code }} {{ error_message }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/dark_mode.css">
+    <link rel="stylesheet" href="/static/css/error_style.css">
   </head>
   <body>
     <!-- Header -->
     <header style="display: none;">
       <button id="darkModeToggle">
-        <img src="../static/images/dark-mode.png" alt="Light Mode" id="modeIcon" width="24" height="24">
+        <img src="/static/images/dark-mode.png" alt="Light Mode" id="modeIcon" width="24" height="24">
       </button>
     </header>
 
     <!-- Body -->
     <div class="error_container">
       <div class="error-image">
-        <img src="https://via.placeholder.com/150" alt="Error Image">
+        <img src="" alt="Error Image">
       </div>
       <div class="error-info">
-        <h1>404 Not Found</h1>
+        <!-- <h1>404 Not Found</h1> -->
+        <h1>{{ error_code }} {{ error_message }}</h1>
         <p>
-          <span>Page Not Found</span>
+          <!-- <span>Page Not Found</span> -->
+          <span>
+            {{ error_detail }}
+          </span>
         </p>
       </div>
     </div>
 
-    <script src="../static/js/mode_color.js"></script>
+    <script src="/static/js/mode_color.js"></script>
   </body>
 </html> 
