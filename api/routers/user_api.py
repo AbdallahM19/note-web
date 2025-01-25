@@ -44,6 +44,8 @@ async def get_user(
                 users_data = user_model.get_user_by_id(user_id)
             elif isinstance(user_id, str) and user_id == "me":
                 users_data = user_model.get_user_by_id(session.user_id)
+            elif isinstance(user_id, str) and user_id.isdigit():
+                users_data = user_model.get_user_by_id(int(user_id))
         case "name" if name:
             users_data = user_model.get_user_by_username(name, skip, limit)
         case "list":
