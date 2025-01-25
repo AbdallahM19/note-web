@@ -21,7 +21,7 @@
     <!-- Body -->
     <div class="error_container">
       <div class="error-image">
-        <img src="" alt="Error Image">
+        <!-- <img alt="Error Image"> -->
       </div>
       <div class="error-info">
         <!-- <h1>404 Not Found</h1> -->
@@ -36,5 +36,18 @@
     </div>
 
     <script src="/static/js/mode_color.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const bodyMode = document.body.classList.contains('dark-mode');
+        const errorImageDiv = document.querySelector('.error-image');
+        const errorImage = document.createElement("img");
+
+        errorImage.src = bodyMode
+          ? '/static/images/close-blue.png'
+          : '/static/images/close-red.png';
+
+        errorImageDiv.appendChild(errorImage);
+      });
+    </script>
   </body>
-</html> 
+</html>
