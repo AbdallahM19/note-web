@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   darkModeToggle.addEventListener("click", () => {
     const isDarkMode = document.body.classList.contains("dark-mode");
 
-    // document.body.classList.toggle("dark-mode");
+    document.body.classList.toggle("dark-mode");
 
     modeIcon.alt = isDarkMode ? "Light Mode" : "Dark Mode";
     modeIcon.src = isDarkMode
