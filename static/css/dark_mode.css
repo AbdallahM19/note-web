@@ -31,9 +31,9 @@ body {
   /* --title-color: rgb(0, 0, 0); */
   --border-input: rgb(192, 80, 0);
   --social-icon-color: rgb(171, 79, 14);
-  --error-background: rgb(220, 92, 0);
+  --error-background: rgb(255, 131, 60);
   --error-info-text: rgb(0, 0, 0);
-  --error-info-p: rgb(0, 0, 0);
+  --error-info-p: rgb(60, 26, 0);
 
   display: flex;
   font-family: sans-serif;
