@@ -1,6 +1,20 @@
+function createImgError(mode) {
+  const errorImage = document.createElement("img");
+
+  if (mode) {
+    errorImage.src = '/static/images/close-blue.png';
+  } else {
+    errorImage.src = '/static/images/close-red.png';
+  }
+  errorImage.alt = "Error Image";
+
+  return errorImage;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const darkModeToggle = document.getElementById("darkModeToggle");
   const modeIcon = document.getElementById("modeIcon");
+  const errorImageDiv = document.querySelector('.error-image');
 
   const panels_container = document.querySelector(".panels-container");
   const left_panel = panels_container ? panels_container.querySelector(".left-panel") : null;
@@ -16,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (left_img_in_panel) left_img_in_panel.src = "/static/images/user.png";
     if (right_img_in_panel) right_img_in_panel.src = "/static/images/user.png";
+    if (errorImageDiv) errorImageDiv.appendChild(createImgError(true));
   } else {
     document.body.classList.remove("dark-mode");
     modeIcon.src = "/static/images/dark-mode.png";
@@ -23,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (left_img_in_panel) left_img_in_panel.src = "/static/images/user-2.png";
     if (right_img_in_panel) right_img_in_panel.src = "/static/images/user-2.png";
+    if (errorImageDiv) errorImageDiv.appendChild(createImgError(false));
   }
 
   darkModeToggle.addEventListener("click", () => {
