@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Union, Optional, Annotated
 from fastapi import APIRouter, Path, Depends, HTTPException, status
 from api.app import note_model
-from api.models.notes import BaseNote, NoteDetails
+from api.models.notes import CreateNote, UpdateNote, NoteDetails
 from api.utils.session import SessionManager, get_session_manager
 
 router = APIRouter(
@@ -57,7 +57,7 @@ async def get_notes_by_field(
 
 @router.post("/create", response_model=NoteDetails, status_code=status.HTTP_201_CREATED)
 async def create_note(
-    note_data: BaseNote, session: SessionManager = Depends(get_session_manager)
+    note_data: CreateNote, session: SessionManager = Depends(get_session_manager)
 ) -> dict:
     """Create a new note."""
     try:
@@ -84,16 +84,11 @@ async def update_note(
             gt=0
         )
     ],
-    content: str,
-    time_edition: datetime = Depends(datetime.now),
-    title: Optional[str] = None,
+    note_data: UpdateNote
 ):
     """Update a note."""
     try:
-        updated_note = note_model.update_note_data(
-            note_id=note_id, content=content,
-            title=title, time_edition=time_edition
-        )
+        updated_note = note_model.update_note_data(note_id, note_data)
         return updated_note
     except Exception as e:
         raise HTTPException(

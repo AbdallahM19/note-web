@@ -1,6 +1,6 @@
 """notes.py"""
 
-from typing import Union, Optional
+from typing import Union, Optional, Annotated
 from datetime import datetime
 # from sqlalchemy import and_, or_
 from pydantic import BaseModel, Field
@@ -8,17 +8,25 @@ from sqlalchemy.exc import SQLAlchemyError
 from api.database import NoteDb, get_db
 
 
-
 class BaseNote(BaseModel):
-    """Class to handle Note data operations"""
-    user_id: Optional[int] = None
+    """Note model"""
     title: Optional[str] = None
     content: str
+
+
+class CreateNote(BaseNote):
+    """Create note model"""
+    user_id: Optional[int] = None
     time_created: Optional[datetime] = Field(default_factory=datetime.utcnow)
     time_edition: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
 
-class NoteDetails(BaseNote):
+class UpdateNote(BaseNote):
+    """Update note model"""
+    time_edition: Optional[datetime] = Field(default_factory=datetime.utcnow)
+
+
+class NoteDetails(CreateNote):
     """Class note with additional fields [id]"""
     id: int
 
@@ -101,16 +109,10 @@ class Note():
                 f"An error occurred while searching notes: {e}"
             ) from e
 
-    def create_a_new_note(self, item: BaseNote) -> NoteDetails:
+    def create_a_new_note(self, item: CreateNote) -> NoteDetails:
         """Creates a new note with the given content and title."""
         try:
-            new_note = NoteDb(
-                user_id=item.user_id,
-                content=item.content,
-                title=item.title,
-                time_created=item.time_created,
-                time_edition=item.time_edition,
-            )
+            new_note = NoteDb(**item.model_dump())
 
             self.sess.add(new_note)
             self.sess.commit()
@@ -123,9 +125,7 @@ class Note():
     def update_note_data(
         self,
         note_id: int,
-        content: str,
-        time_edition: datetime,
-        title: Union[str, None] = None,
+        note_data: UpdateNote
     ) -> NoteDetails:
         """Updates the note data in the database."""
         try:
@@ -136,9 +136,8 @@ class Note():
             if old_note is None:
                 raise ValueError(f"No note found with id {note_id}")
 
-            old_note.content = content
-            old_note.title = title
-            old_note.time_edition = time_edition
+            for key, value in note_data.model_dump(exclude_unset=True).items():
+                setattr(old_note, key, value)
 
             self.sess.commit()
             self.sess.refresh(old_note)
