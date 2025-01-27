@@ -71,7 +71,7 @@ async def login(req: Request):
     )
 
 
-@router.get("/index")
+@router.get("/index", deprecated=True)
 async def index():
     """index Page"""
     content = """
