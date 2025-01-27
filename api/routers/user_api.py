@@ -226,6 +226,7 @@ async def update_user_data(
             user_dict["id"] = user_id
         elif isinstance(user_id, str) and user_id == 'me':
             user_dict["session_id"] = session.session_id
+            # user_dict["id"] = session.user_id
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
