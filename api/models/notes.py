@@ -1,11 +1,20 @@
 """notes.py"""
 
-from typing import Union, Optional, Annotated
+from typing import Optional
 from datetime import datetime
 # from sqlalchemy import and_, or_
+from enum import Enum
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import SQLAlchemyError
 from api.database import NoteDb, get_db
+
+
+# Predefined values
+class NoteField(str, Enum):
+    """Enum for note fields"""
+    ID = "id"
+    TITLE = "title"
+    CONTENT = "content"
 
 
 class BaseNote(BaseModel):
