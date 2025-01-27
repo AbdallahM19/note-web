@@ -40,13 +40,19 @@ async def get_notes_by_field(
                 notes_data = f"Invalid field: {field}. Must be 'title', 'content', 'list' or 'id'."
 
         if isinstance(notes_data, str):
-            raise HTTPException(status_code=400, detail=notes_data)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=notes_data
+            )
 
         return notes_data
     except HTTPException as http_ex:
         raise http_ex
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) from e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        ) from e
 
 
 @router.post("/create", response_model=NoteDetails, status_code=status.HTTP_201_CREATED)
@@ -54,12 +60,19 @@ async def create_note(
     note_data: BaseNote, session: SessionManager = Depends(get_session_manager)
 ) -> dict:
     """Create a new note."""
-    if note_data.user_id == 0 or not note_data.user_id:
-        note_data.user_id = session.user_id
+    try:
+        if note_data.user_id == 0 or not note_data.user_id:
+            note_data.user_id = session.user_id
 
-    new_note = note_model.create_a_new_note(note_data)
+        new_note = note_model.create_a_new_note(note_data)
 
-    return new_note
+        return new_note
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        ) from e
+    
 
 
 @router.put("/{note_id}/update", response_model=NoteDetails)
@@ -76,11 +89,17 @@ async def update_note(
     title: Optional[str] = None,
 ):
     """Update a note."""
-    updated_note = note_model.update_note_data(
-        note_id=note_id, content=content,
-        title=title, time_edition=time_edition
-    )
-    return updated_note
+    try:
+        updated_note = note_model.update_note_data(
+            note_id=note_id, content=content,
+            title=title, time_edition=time_edition
+        )
+        return updated_note
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        ) from e
 
 
 @router.delete("/{note_id}/delete")
@@ -94,7 +113,13 @@ async def delete_note_data_permanently(
     ]
 ) -> dict:
     """Delete note data permanently."""
-    note_model.delete_note_by_id(note_id)
-    return {
-        "message": f"Note with id {note_id} has been deleted permanently."
-    }
+    try:
+        note_model.delete_note_by_id(note_id)
+        return {
+            "message": f"Note with id {note_id} has been deleted permanently."
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        ) from e

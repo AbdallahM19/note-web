@@ -54,7 +54,10 @@ async def get_user(
             users_data = f"Invalid field: '{field}'."
 
     if not users_data:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
 
     if isinstance(users_data, UserDb):
         return users_data
@@ -64,7 +67,10 @@ async def get_user(
             return users_data
         return users_data
 
-    raise HTTPException(status_code=400, detail=users_data)
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail=users_data
+    )
 
 
 @router.post("/login", status_code=status.HTTP_201_CREATED)
@@ -91,13 +97,13 @@ async def login(
 
         if not current_user:
             raise HTTPException(
-                status_code=404,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="Invalid username or email. user not found"
             )
 
         if current_user.hashed_password != password:
             raise HTTPException(
-                status_code=400,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid password. password not correct"
             )
 
@@ -111,7 +117,7 @@ async def login(
         raise http_ex
     except Exception as e:
         raise HTTPException(
-            status_code=500,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while logging the user: {str(e)}"
         ) from e
 
@@ -133,7 +139,7 @@ async def register(
         if existing_user:
             error_field = "username" if existing_user.username == username else "email"
             raise HTTPException(
-                status_code=400,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"User already exists. Please try with different {error_field}"
             )
 
@@ -155,7 +161,7 @@ async def register(
         raise http_ex
     except Exception as e:
         raise HTTPException(
-            status_code=500,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while registering the user: {str(e)}"
         ) from e
 
@@ -222,7 +228,7 @@ async def update_user_data(
             user_dict["session_id"] = session.session_id
         else:
             raise HTTPException(
-                status_code=400,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid user_id. It should be either 'me' or a positive integer."
             )
 
@@ -234,17 +240,17 @@ async def update_user_data(
                     email=user_dict["email"],
                     date_of_birth=user_dict["date_of_birth"],
                 ),
-                "status": 200
+                # "status": 200
             }
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to update user account id={user_id}"
         )
     except HTTPException as http_ex:
         raise http_ex
     except Exception as e:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while updating the user: {str(e)}"
         ) from e
 
@@ -274,14 +280,14 @@ async def get_user_profile_image(
             return FileResponse(location_file, media_type="image/jpeg")
             # return Response(content=open(location_file, 'rb').read(), media_type="image/jpeg")
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="User profile image not found"
         )
     except HTTPException as http_ex:
         raise http_ex
     except Exception as e:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while getting the user profile image: {str(e)}"
         ) from e
 
@@ -318,17 +324,17 @@ async def update_user_profile_image(
             return {
                 "message": "Profile image updated successfully",
                 "profile_image": location_file,
-                "status": 200
+                # "status": 200
             }
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to update user profile image"
         )
     except HTTPException as http_ex:
         raise http_ex
     except Exception as e:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while updating the profile image: {str(e)}"
         ) from e
 
@@ -352,11 +358,11 @@ async def delete_user_account_completely(
     if user_model.delete_user(user_id):
         return {
             "message": "User account has been deleted successfully",
-            "status": 200
+            # "status": 200
         }
 
     raise HTTPException(
-        status_code=400,
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail=f"Failed to delete user account id={user_id}"
     )
 
