@@ -1,10 +1,9 @@
 """note_api.py"""
 
-from datetime import datetime
 from typing import Union, Optional, Annotated
 from fastapi import APIRouter, Path, Depends, HTTPException, status
 from api.app import note_model
-from api.models.notes import CreateNote, UpdateNote, NoteDetails
+from api.models.notes import NoteField, CreateNote, UpdateNote, NoteDetails
 from api.utils.session import SessionManager, get_session_manager
 
 router = APIRouter(
@@ -15,7 +14,7 @@ router = APIRouter(
 
 @router.get("/{field}")
 async def get_notes_by_field(
-    field: Optional[str],
+    field: NoteField,
     query: Optional[str] = None,
     note_id: Optional[int] = None,
     skip: Optional[int] = None,
@@ -72,7 +71,6 @@ async def create_note(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e)
         ) from e
-    
 
 
 @router.put("/{note_id}/update", response_model=NoteDetails)
