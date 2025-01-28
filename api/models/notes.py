@@ -22,6 +22,7 @@ class NoteField(str, Enum):
     """Enum for note fields"""
     ID = "id"
     USERID = "user_id"
+    LIST = "list"
     TITLE = "title"
     CONTENT = "content"
 
@@ -125,13 +126,13 @@ class Note():
                 return "No notes found"
 
             if skip is not None and limit is not None:
-                notes = notes.offset(skip).limit(limit).all()
+                notes = notes.offset(skip).limit(limit)
             elif skip is not None:
-                notes = notes.offset(skip).limit(10).all()
+                notes = notes.offset(skip).limit(10)
             elif limit is not None:
-                notes = notes.limit(limit).all()
-            else:
-                notes = notes.all()
+                notes = notes.limit(limit)
+
+            notes = notes.all()
 
             if not notes:
                 return f"No notes found '{query}' for the search query."
