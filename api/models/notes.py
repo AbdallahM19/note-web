@@ -162,13 +162,18 @@ class Note():
         except Exception as e:
             raise SQLAlchemyError(f"An error occurred while updating note data: {e}") from e
 
-    def delete_note_by_id(self, note_id: int):
+    def delete_note_by_id(self, note_id: NoteId):
         """Deletes a note by its ID."""
         try:
-            self.sess.query(NoteDb).filter(
-                NoteDb.id == note_id
-            ).delete()
+            note = self.sess.query(NoteDb).filter(NoteDb.id == note_id).first()
+
+            if note is None:
+                raise ValueError(f"No note found with id {note_id}")
+
+            self.sess.delete(note)
             self.sess.commit()
+        except ValueError as ve:
+            raise ve
         except Exception as e:
             self.sess.rollback()
             raise SQLAlchemyError(f"An error occurred while deleting note by ID: {e}") from e
