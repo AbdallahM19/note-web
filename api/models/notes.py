@@ -6,12 +6,15 @@ from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import SQLAlchemyError
-from fastapi import Path
+from fastapi import Path, Depends
 from api.database import NoteDb, get_db
+from api.utils.session import SessionManager, get_session_manager
 
 
 NoteId = Annotated[int, Path(gt=0)]
 TimeChanged = Annotated[Optional[datetime], Field(default_factory=datetime.utcnow)]
+
+SessionRequest = Annotated[SessionManager, Depends(get_session_manager)]
 
 
 # Predefined values
@@ -123,9 +126,12 @@ class Note():
                 f"An error occurred while searching notes: {e}"
             ) from e
 
-    def create_a_new_note(self, item: CreateNote) -> NoteDetails:
+    def create_a_new_note(self, item: CreateNote, session: SessionRequest) -> NoteDetails:
         """Creates a new note with the given content and title."""
         try:
+            if item.user_id == 0 or not item.user_id:
+                item.user_id = session.user_id
+
             new_note = NoteDb(**item.model_dump())
 
             self.sess.add(new_note)

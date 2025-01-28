@@ -3,8 +3,8 @@
 from typing import Union, Optional, Annotated
 from fastapi import APIRouter, Path, Depends, HTTPException, status
 from api.app import note_model
-from api.models.notes import NoteField, CreateNote, NoteDetails
-from api.utils.session import SessionManager, get_session_manager
+from api.models.notes import NoteField, NoteDetails
+# from api.utils.session import SessionManager, get_session_manager
 
 router = APIRouter(
     prefix='/api/notes',
@@ -56,16 +56,14 @@ async def get_notes_by_field(
 
 @router.post("/create", response_model=NoteDetails, status_code=status.HTTP_201_CREATED)
 async def create_note(
-    note_data: CreateNote, session: SessionManager = Depends(get_session_manager)
+    note_data: Annotated[
+        NoteDetails,
+        Depends(note_model.create_a_new_note)
+    ],
 ) -> dict:
     """Create a new note."""
     try:
-        if note_data.user_id == 0 or not note_data.user_id:
-            note_data.user_id = session.user_id
-
-        new_note = note_model.create_a_new_note(note_data)
-
-        return new_note
+        return note_data
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
