@@ -1,12 +1,17 @@
 """notes.py"""
 
-from typing import Optional
+from typing import Optional, Annotated
 from datetime import datetime
 # from sqlalchemy import and_, or_
 from enum import Enum
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import SQLAlchemyError
+from fastapi import Path
 from api.database import NoteDb, get_db
+
+
+NoteId = Annotated[int, Path(gt=0)]
+TimeChanged = Annotated[Optional[datetime], Field(default_factory=datetime.utcnow)]
 
 
 # Predefined values
@@ -26,13 +31,13 @@ class BaseNote(BaseModel):
 class CreateNote(BaseNote):
     """Create note model"""
     user_id: Optional[int] = None
-    time_created: Optional[datetime] = Field(default_factory=datetime.utcnow)
-    time_edition: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    time_created: TimeChanged
+    time_edition: TimeChanged
 
 
 class UpdateNote(BaseNote):
     """Update note model"""
-    time_edition: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    time_edition: TimeChanged
 
 
 class NoteDetails(CreateNote):
@@ -131,11 +136,7 @@ class Note():
         except Exception as e:
             raise SQLAlchemyError(f"An error occurred while creating a new note: {e}") from e
 
-    def update_note_data(
-        self,
-        note_id: int,
-        note_data: UpdateNote
-    ) -> NoteDetails:
+    def update_note_data(self, note_id: NoteId, note_data: UpdateNote) -> NoteDetails:
         """Updates the note data in the database."""
         try:
             old_note = self.sess.query(NoteDb).filter(

@@ -3,7 +3,7 @@
 from typing import Union, Optional, Annotated
 from fastapi import APIRouter, Path, Depends, HTTPException, status
 from api.app import note_model
-from api.models.notes import NoteField, CreateNote, UpdateNote, NoteDetails
+from api.models.notes import NoteField, CreateNote, NoteDetails
 from api.utils.session import SessionManager, get_session_manager
 
 router = APIRouter(
@@ -75,19 +75,13 @@ async def create_note(
 
 @router.put("/{note_id}/update", response_model=NoteDetails)
 async def update_note(
-    note_id: Annotated[
-        int, Path(
-            title="The ID of the note to be updated",
-            description="The ID of the note to be updated",
-            gt=0
-        )
-    ],
-    note_data: UpdateNote
+    note_data: Annotated[
+        NoteDetails, Depends(note_model.update_note_data)
+    ]
 ):
     """Update a note."""
     try:
-        updated_note = note_model.update_note_data(note_id, note_data)
-        return updated_note
+        return note_data
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
