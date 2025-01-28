@@ -7,7 +7,7 @@ from enum import Enum
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import Path, Depends
-from api.database import NoteDb, get_db
+from api.database import NoteDb, get_db, UserDb
 from api.utils.session import SessionManager, get_session_manager
 
 
@@ -21,6 +21,7 @@ SessionRequest = Annotated[SessionManager, Depends(get_session_manager)]
 class NoteField(str, Enum):
     """Enum for note fields"""
     ID = "id"
+    USERID = "user_id"
     TITLE = "title"
     CONTENT = "content"
 
@@ -45,7 +46,7 @@ class UpdateNote(BaseNote):
 
 class NoteDetails(CreateNote):
     """Class note with additional fields [id]"""
-    id: int
+    id: NoteId
 
 
 class Note():
@@ -63,6 +64,23 @@ class Note():
         except Exception as e:
             raise SQLAlchemyError(
                 f"An error occurred while fetching note by id: {e}"
+            ) from e
+
+    def get_notes_by_user_id(self, user_id: int):
+        """Fetches all notes by user id."""
+        try:
+            user_exists = self.sess.query(UserDb).filter(UserDb.id == user_id).first()
+            if not user_exists:
+                return f"User with id {user_id} does not exist."
+
+            notes = self.sess.query(NoteDb).filter(NoteDb.user_id == user_id).all()
+            if notes:
+                return notes
+
+            return f"No notes found for user (id = {user_id})"
+        except Exception as e:
+            raise SQLAlchemyError(
+                f"An error occurred while fetching notes by user id: {e}"
             ) from e
 
     def get_all_notes(self, skip: Optional[int] = None, limit: Optional[int] = None):

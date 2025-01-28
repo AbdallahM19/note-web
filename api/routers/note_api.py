@@ -17,6 +17,7 @@ async def get_notes_by_field(
     field: NoteField,
     query: Optional[str] = None,
     note_id: Optional[int] = None,
+    user_id: Optional[int] = None,
     skip: Optional[int] = None,
     limit: Optional[int] = None,
 ) -> Union[dict, NoteDetails, list[NoteDetails]]:
@@ -35,6 +36,10 @@ async def get_notes_by_field(
                 )
             case 'title' | 'content' if query is None:
                 notes_data = f"Invalid query for field: {field}."
+            case 'user_id' if user_id:
+                notes_data = note_model.get_notes_by_user_id(
+                    user_id=user_id
+                )
             case _:
                 notes_data = f"Invalid field: {field}. Must be 'title', 'content', 'list' or 'id'."
 
