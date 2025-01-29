@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import Path, Depends
 from api.database import NoteDb, get_db, UserDb
-from api.utils.session import SessionManager, get_session_manager
+from api.utils.session import SessionManager, get_session_manager, get_current_user_id
 
 
 NoteId = Annotated[int, Path(gt=0)]
@@ -59,8 +59,10 @@ class Note():
         """Fetches a note by its id."""
         try:
             note = self.sess.query(NoteDb).filter(NoteDb.id == note_id).first()
+
             if note:
                 return note
+
             return f"Note (id = {note_id}) not found"
         except Exception as e:
             raise SQLAlchemyError(
@@ -139,11 +141,16 @@ class Note():
                 f"An error occurred while searching notes: {e}"
             ) from e
 
-    def create_a_new_note(self, item: CreateNote, session: SessionRequest) -> NoteDetails:
+    def create_a_new_note(
+        self, item: CreateNote,
+        current_user_id: Annotated[int, Depends(get_current_user_id)]
+    ) -> NoteDetails:
         """Creates a new note with the given content and title."""
         try:
-            if item.user_id == 0 or not item.user_id:
-                item.user_id = session.user_id
+            if (item.user_id == 0 or item.user_id is None) and current_user_id:
+                item.user_id = current_user_id
+            else:
+                raise ValueError("Invalid user id")
 
             new_note = NoteDb(**item.model_dump())
 
