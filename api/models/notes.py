@@ -89,14 +89,7 @@ class Note():
         try:
             notes = self.sess.query(NoteDb)
 
-            if skip is not None and limit is not None:
-                notes = notes.offset(skip).limit(limit)
-            elif skip is None and limit:
-                notes = notes.offset(0).limit(limit)
-            elif skip and limit is None:
-                notes = notes.offset(skip).limit(10)
-
-            notes = notes.all()
+            notes = Note.skip_and_limit_selected(notes, skip, limit)
 
             if not notes:
                 return "No notes found"
@@ -125,14 +118,7 @@ class Note():
             if not notes:
                 return "No notes found"
 
-            if skip is not None and limit is not None:
-                notes = notes.offset(skip).limit(limit)
-            elif skip is not None:
-                notes = notes.offset(skip).limit(10)
-            elif limit is not None:
-                notes = notes.limit(limit)
-
-            notes = notes.all()
+            notes = Note.skip_and_limit_selected(notes, skip, limit)
 
             if not notes:
                 return f"No notes found '{query}' for the search query."
@@ -208,3 +194,19 @@ class Note():
             "time_created": note.time_created,
             "time_edition": note.time_edition,
         }
+
+    @staticmethod
+    def skip_and_limit_selected(
+        notes,
+        skip: Optional[int] = None,
+        limit: Optional[int] = None
+    ):
+        """skip and limit the selected notes"""
+        if skip is not None and limit is not None:
+            notes = notes.offset(skip).limit(limit)
+        elif skip is None and limit:
+            notes = notes.offset(0).limit(limit)
+        elif skip and limit is None:
+            notes = notes.offset(skip).limit(10)
+
+        return notes.all()
