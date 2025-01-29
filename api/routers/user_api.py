@@ -9,7 +9,7 @@ from fastapi.responses import RedirectResponse, FileResponse
 from api.app import user_model
 from api.database import UserDb
 from api.models.users import BaseUser, UserIn, UserField
-from api.utils.session import SessionManager, get_session_manager, clear_session
+from api.utils.session import SessionManager, get_session_manager, get_current_user_id, clear_session
 
 
 router = APIRouter(
@@ -28,7 +28,7 @@ async def get_user(
     name: Optional[str] = None,
     skip: Optional[int] = None,
     limit: Optional[int] = None,
-    session: SessionManager = Depends(get_session_manager)
+    current_user_id: int = Depends(get_current_user_id)
 ) -> Union[str, BaseUser, list[BaseUser]]:
     """
     Get user by id, or
@@ -38,12 +38,12 @@ async def get_user(
 
     match field:
         case "me":
-            users_data = user_model.get_user_by_id(session.user_id)
+            users_data = user_model.get_user_by_id(current_user_id)
         case "id":
             if isinstance(user_id, int):
                 users_data = user_model.get_user_by_id(user_id)
             elif isinstance(user_id, str) and user_id == "me":
-                users_data = user_model.get_user_by_id(session.user_id)
+                users_data = user_model.get_user_by_id(current_user_id)
             elif isinstance(user_id, str) and user_id.isdigit():
                 users_data = user_model.get_user_by_id(int(user_id))
         case "name" if name:
