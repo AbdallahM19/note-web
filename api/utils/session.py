@@ -21,3 +21,13 @@ class SessionManager:
 async def get_session_manager(request: Request) -> SessionManager:
     """Get session manager instance from request."""
     return await SessionManager.get_session_id(request)
+
+async def get_current_user_id(request: Request) -> int:
+    """Get session manager instance from request."""
+    session = await SessionManager.get_session_id(request)
+    return session.user_id
+
+async def get_current_session_id(request: Request) -> str:
+    """Get session manager instance from request."""
+    session = await SessionManager.get_session_id(request)
+    return session.session_id
