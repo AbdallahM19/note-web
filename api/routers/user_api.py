@@ -9,7 +9,7 @@ from fastapi.responses import RedirectResponse, FileResponse
 from api.app import user_model
 from api.database import UserDb
 from api.models.users import BaseUser, UserIn, UserField
-from api.utils.session import SessionManager, get_session_manager
+from api.utils.session import SessionManager, get_session_manager, clear_session
 
 
 router = APIRouter(
@@ -354,12 +354,11 @@ async def delete_user_account_completely(
     """Delete user Account permanently"""
     if isinstance(user_id, str) and user_id == "me":
         user_id = req.session.get("id")
-        req.session.clear()
+        await clear_session(req)
 
     if user_model.delete_user(user_id):
         return {
             "message": "User account has been deleted successfully",
-            # "status": 200
         }
 
     raise HTTPException(
@@ -369,8 +368,6 @@ async def delete_user_account_completely(
 
 
 @router.delete("/logout")
-async def logout_user(req: Request) -> dict:
+async def logout_user(_: None = Depends(clear_session)):
     """Logout user"""
-    req.session.clear()
-
     return RedirectResponse(url="/login", status_code=303)
