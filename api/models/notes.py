@@ -67,7 +67,12 @@ class Note():
                 f"An error occurred while fetching note by id: {e}"
             ) from e
 
-    def get_notes_by_user_id(self, user_id: int):
+    def get_notes_by_user_id(
+        self,
+        user_id: int,
+        skip: Optional[int] = None,
+        limit: Optional[int] = None
+    ):
         """Fetches all notes by user id."""
         try:
             user_exists = self.sess.query(UserDb).filter(UserDb.id == user_id).first()
@@ -75,6 +80,9 @@ class Note():
                 return f"User with id {user_id} does not exist."
 
             notes = self.sess.query(NoteDb).filter(NoteDb.user_id == user_id).all()
+
+            notes = self.skip_and_limit_selected(notes, skip, limit)
+
             if notes:
                 return notes
 
