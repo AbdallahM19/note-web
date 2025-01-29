@@ -30,16 +30,16 @@ async def get_notes_by_field(
                 notes_data = note_model.get_note_by_id(note_id)
             case 'list':
                 notes_data = note_model.get_all_notes(skip=skip, limit=limit)
-            case 'title' | 'content' if query:
-                notes_data = note_model.search_notes(
-                    field=field, query=query, skip=skip, limit=limit
-                )
-            case 'title' | 'content' if query is None:
-                notes_data = f"Invalid query for field: {field}."
-            case 'user_id' if user_id:
-                notes_data = note_model.get_notes_by_user_id(
-                    user_id=user_id
-                )
+            case 'title' | 'content':
+                if query:
+                    notes_data = note_model.search_notes(field, query, skip, limit)
+                else:
+                    notes_data = f"Invalid query for field: {field}."
+            case 'user_id':
+                if user_id:
+                    notes_data = note_model.get_notes_by_user_id(user_id, skip, limit)
+                else:
+                    notes_data = f"Invalid user_id for field: {field}."
             case _:
                 notes_data = f"Invalid field: {field}. Must be 'title', 'content', 'list' or 'id'."
 
