@@ -147,8 +147,11 @@ class Note():
     ) -> NoteDetails:
         """Creates a new note with the given content and title."""
         try:
-            if (item.user_id == 0 or item.user_id is None) and current_user_id:
-                item.user_id = current_user_id
+            if item.user_id is None or item.user_id == 0:
+                if current_user_id is not None:
+                    item.user_id = current_user_id
+                else:
+                    raise ValueError("Current user id is not available")
             else:
                 raise ValueError("Invalid user id")
 
