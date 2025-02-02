@@ -101,7 +101,8 @@ async def login(
                 detail="Invalid username or email. user not found"
             )
 
-        if current_user.hashed_password != password:
+        hashed_password = user_model.hash_password(password)
+        if current_user.hashed_password != hashed_password:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid password. password not correct"
@@ -147,7 +148,7 @@ async def register(
         current_user = user_model.insert_new_user(
             username=username,
             email=email,
-            hashed_password=password,
+            hashed_password=user_model.hash_password(password),
             # date_of_birth=date_of_birth,
             session_id=str(uuid4())
         )

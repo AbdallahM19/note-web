@@ -242,6 +242,6 @@ class User():
         }
 
     @staticmethod
-    def _hash_password(password: str):
+    def hash_password(password: str):
         """Hash password using bcrypt"""
         return f"fake{password}"
