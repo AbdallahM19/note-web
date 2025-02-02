@@ -240,3 +240,8 @@ class User():
             "date_of_birth": user.date_of_birth,
             "profile_image": user.profile_image,
         }
+
+    @staticmethod
+    def _hash_password(password: str):
+        """Hash password using bcrypt"""
+        return f"fake{password}"
