@@ -12,9 +12,10 @@ class SessionManager:
     @classmethod
     async def get_session_id(cls, request: Request):
         """Get session id from session object."""
+        session = getattr(request, "session", {})
         return cls(
-            user_id=request.session.get("id"),
-            session_id=request.session.get("session_id")
+            user_id=session.get("id"),
+            session_id=session.get("session_id")
         )
 
 
@@ -34,4 +35,5 @@ async def get_current_session_id(request: Request) -> str:
 
 async def clear_session(request: Request):
     """Clear session data from session manager."""
-    request.session.clear()
+    if hasattr(request, "session"):
+        request.session.clear()
