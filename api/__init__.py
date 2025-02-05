@@ -1,14 +1,21 @@
 """__init__.py"""
 
 from fastapi import FastAPI, Request, HTTPException
+from fastapi.routing import Mount, APIRoute
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
-from api.app import router, templates
+from api.app import router, templates, root
 from api.routers.user_api import router as user_router
 from api.routers.note_api import router as note_router
 from api.database import create_database, create_tables, drop_db
 
-app = FastAPI()
+
+routes=[
+    Mount("/static", StaticFiles(directory="static"), name="static"),
+    # APIRoute("/", endpoint=root, methods=["GET"]),
+]
+
+app = FastAPI(routes=routes)
 
 # Session middleware configuration
 app.add_middleware(SessionMiddleware, secret_key="mysecretkey2024")
@@ -16,8 +23,6 @@ app.add_middleware(SessionMiddleware, secret_key="mysecretkey2024")
 app.include_router(router)
 app.include_router(user_router)
 app.include_router(note_router)
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.on_event("startup")
